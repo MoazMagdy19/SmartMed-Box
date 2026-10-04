@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SmartMed Box</title>
+<style>
+:root{--bg:#f1f6f9;--card:#fff;--tx:#10262f;--mu:#557080;--pr:#0b7a8f;--prt:#fff;--bd:#d5e2e8;--ok:#16803c;--okb:#dcfce7;--wa:#b45309;--wab:#ffedd5;--gr:#475569;--grb:#e2e8f0;--rd:#b91c1c;--rdb:#fee2e2;--yl:#facc15;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1a20;--card:#132a33;--tx:#eaf4f7;--mu:#9bb5c0;--pr:#38bdd6;--prt:#04222a;--bd:#25424d;--ok:#4ade80;--okb:#12391f;--wa:#fdba74;--wab:#3d2410;--gr:#cbd5e1;--grb:#26404a;--rd:#fca5a5;--rdb:#3f1515}}
+:root[data-theme="dark"]{--bg:#0b1a20;--card:#132a33;--tx:#eaf4f7;--mu:#9bb5c0;--pr:#38bdd6;--prt:#04222a;--bd:#25424d;--ok:#4ade80;--okb:#12391f;--wa:#fdba74;--wab:#3d2410;--gr:#cbd5e1;--grb:#26404a;--rd:#fca5a5;--rdb:#3f1515}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;font-size:18px;line-height:1.5}
+#app{max-width:520px;margin:0 auto;padding:0 16px 110px}
+header.top{background:linear-gradient(135deg,#0b7a8f,#0e9f8e);color:#fff;margin:0 -16px 16px;padding:22px 20px 20px;border-radius:0 0 28px 28px}
+header.top h1{margin:0;font-size:26px}header.top p{margin:2px 0 0;opacity:.92;font-size:15px}
+h2{font-size:22px;margin:22px 0 10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:16px;margin-bottom:12px;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.row{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.ic{font-size:30px;width:52px;height:52px;border-radius:16px;background:var(--grb);display:grid;place-items:center;flex:none}
+.grow{flex:1;min-width:0}.mu{color:var(--mu);font-size:16px}b{font-weight:700}
+.badge{display:inline-block;padding:4px 12px;border-radius:99px;font-size:15px;font-weight:700;margin-top:6px}
+.taken{background:var(--okb);color:var(--ok)}.soon{background:var(--wab);color:var(--wa)}.waiting{background:var(--grb);color:var(--gr)}.missed{background:var(--rdb);color:var(--rd)}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font-size:19px;font-weight:700;background:var(--pr);color:var(--prt);cursor:pointer;font-family:inherit;transition:transform .15s}
+.btn:active{transform:scale(.97)}.btn.sec{background:var(--grb);color:var(--tx)}.btn.ok{background:var(--ok);color:#fff}.btn+.btn{margin-top:10px}
+.prog{height:16px;background:var(--grb);border-radius:99px;overflow:hidden;margin:10px 0 6px}.prog i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .6s}
+input[type=text],input[type=time],select{width:100%;padding:14px;font-size:18px;border-radius:14px;border:2px solid var(--bd);background:var(--bg);color:var(--tx);font-family:inherit;margin:4px 0 12px}
+label{font-weight:700;font-size:16px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--bd);display:flex;justify-content:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+nav button{flex:1;max-width:96px;background:none;border:0;color:var(--mu);font-family:inherit;font-size:13px;font-weight:700;padding:6px 2px;border-radius:14px;cursor:pointer}
+nav button span{display:block;font-size:24px}nav button.on{color:var(--pr);background:var(--grb)}
+.tl{position:relative;padding-inline-start:26px;border-inline-start:3px solid var(--bd);margin-inline-start:8px}
+.tl>div{position:relative;margin-bottom:16px}.tl>div:before{content:"";position:absolute;inset-inline-start:-36px;top:6px;width:16px;height:16px;border-radius:50%;background:var(--pr);border:3px solid var(--bg)}
+.box{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#1e3a44;padding:12px;border-radius:24px}
+.cell{background:#eaf4f7;color:#10262f;border-radius:16px;padding:14px 8px;text-align:center;font-weight:700;min-height:110px;transition:all .3s}
+.led{width:22px;height:22px;border-radius:50%;margin:8px auto 4px;background:#cbd5e1;border:2px solid #94a3b8}
+.led.ready{background:#22c55e;border-color:#15803d;box-shadow:0 0 10px #22c55e}.led.time{background:var(--yl);border-color:#a16207;box-shadow:0 0 18px 6px var(--yl);animation:pl .8s infinite}
+.cell.alert{background:#fef9c3;animation:sh .5s 3;outline:4px solid var(--yl)}
+@keyframes pl{50%{opacity:.45}}@keyframes sh{25%{transform:rotate(-2deg)}75%{transform:rotate(2deg)}}
+.alertc{background:var(--wab);color:var(--wa);border:2px solid var(--wa);text-align:center;font-size:22px;font-weight:700}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#22c55e;margin-inline-end:6px}
+.tg{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)}
+.sw{width:56px;height:32px;border-radius:99px;background:var(--grb);position:relative;border:0;cursor:pointer;flex:none}
+.sw:after{content:"";position:absolute;top:4px;inset-inline-start:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0005;transition:all .2s}
+.sw.on{background:var(--ok)}.sw.on:after{inset-inline-start:28px}
+.chk{display:flex;gap:12px;align-items:center;padding:10px 0;font-size:18px}.chk input{width:26px;height:26px;accent-color:var(--pr)}
+.toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:12px 20px;border-radius:14px;z-index:20;font-weight:700;max-width:90%;text-align:center;animation:in .3s}
+.modal{position:fixed;inset:0;background:#000a;z-index:10;display:grid;place-items:center;padding:20px}
+.modal>div{background:var(--card);border-radius:24px;padding:20px;width:100%;max-width:420px}
+.doc{height:170px;background:repeating-linear-gradient(var(--grb) 0 2px,transparent 2px 22px);border-radius:12px;border:1px solid var(--bd);margin:12px 0;display:grid;place-items:center;font-size:44px}
+.note{font-size:14px;color:var(--mu);text-align:center;margin-top:14px}
+body{font-size:clamp(17px,.5vw + 15px,20px);overflow-x:hidden}
+.card,.btn,h2,b{overflow-wrap:anywhere}
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));column-gap:14px;align-items:start}
+main>header,main>h2,main>.btn,main>input,main>.tl,main>.note,main>div[style]{grid-column:1/-1}
+main>.box{grid-column:1/-1;width:100%;max-width:460px;justify-self:center}
+main>.btn{max-width:460px}
+main>.card.alertc{grid-column:1/-1}
+@media (max-width:360px){#app{padding:0 12px 100px}header.top{margin:0 -12px 14px}nav button{font-size:12px}.ic{width:44px;height:44px;font-size:24px}}
+@media (min-width:640px){#app{padding:0 28px 110px}header.top{margin:0 -28px 20px}.tl{max-width:560px}}
+@media (min-width:900px){header.top{margin:0 0 20px;border-radius:28px}}
+@media (min-width:1000px){#app{max-width:1240px;padding:24px 28px 40px}.shell{display:flex;gap:24px;align-items:flex-start}
+nav{position:sticky;top:24px;bottom:auto;left:auto;right:auto;width:124px;height:auto;flex:none;flex-direction:column;justify-content:flex-start;gap:6px;padding:12px 8px;border:1px solid var(--bd);border-radius:24px;z-index:1}
+nav button{flex:none;max-width:none;font-size:15px;padding:12px 4px}nav button span{font-size:28px}main{flex:1;min-width:0}}
+@media (max-height:480px) and (orientation:landscape){nav button span{font-size:20px}nav button{font-size:11px;padding:2px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var S={tab:'home',form:false,docSheet:false,view:null,toast:'',q:'',box:'idle',
+meds:[{n:'دواء الضغط',d:'1 قرص',f:'مرة يوميًا',t:'08:00',s:1,st:'taken'},{n:'الدواء الثاني',d:'1 قرص',f:'مرة يوميًا',t:'14:00',s:2,st:'soon'},{n:'دواء المساء',d:'1 قرص',f:'مرة يوميًا',t:'20:00',s:3,st:'waiting'}],
+docs:[{c:'rx',n:'روشتة ضغط الدم',dt:'20 Sep 2026',sub:'د. سامي — متابعة الضغط'},{c:'rx',n:'روشتة مضاد حيوي',dt:'10 Jul 2026',sub:'د. هالة'},{c:'lab',n:'تحليل السكر التراكمي',dt:'15 Aug 2026',sub:'معمل النور'},{c:'lab',n:'صورة دم كاملة',dt:'15 Aug 2026',sub:'معمل النور'},{c:'rep',n:'تقرير زيارة الطبيب',dt:'20 Sep 2026',sub:'تقرير متابعة ضغط الدم'},{c:'rep',n:'تقرير رسم القلب',dt:'10 Jul 2026',sub:'عيادة القلب'}],
+visits:[['20 Sep 2026','زيارة طبيب','تم حفظ التقرير'],['15 Aug 2026','تحليل','تم حفظ النتيجة'],['10 Jul 2026','زيارة طبيب','تم إضافة وصفة دوائية']],
+sh:{a:1,b:0,c:0,d:0,on:1},set:{notif:1,sound:1,vib:1,dark:0,lang:1,conn:1}};
+var LB={taken:'🟢 تم تناول الجرعة',soon:'🟠 موعد الجرعة قريب',waiting:'⚪ لم يحن الموعد',missed:'🔴 لم تؤخذ الجرعة'};
+var SL=['','صباحًا','ظهرًا','مساءً','احتياطي'];
+var CN={rx:'روشتة',lab:'تحليل',rep:'تقرير'};
+function esc(x){var e=document.createElement('div');e.textContent=x;return e.innerHTML}
+function ap(t){var h=+t.slice(0,2);return t+(h<12?' ص':' م')}
+function toast(m){S.toast=m;R();setTimeout(function(){S.toast='';R()},2400)}
+function beep(){if(!S.set.sound)return;try{var a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator();o.frequency.value=880;o.connect(a.destination);o.start();o.stop(a.currentTime+.25)}catch(e){}}
+function medCard(m){return '<div class="card"><div class="row"><div class="ic">💊</div><div class="grow"><b>'+esc(m.n)+'</b><div class="mu">'+ap(m.t)+' • '+esc(m.d)+'</div><span class="badge '+m.st+'">'+LB[m.st]+'</span></div></div></div>'}
+function home(){var tk=S.meds.filter(function(m){return m.st=='taken'}).length,n=S.meds.length;
+return '<header class="top"><p>مرحبًا بك 👋</p><h1>محمد أحمد</h1><p>العمر: 65 سنة</p></header>'+
+(S.box=='alert'?'<div class="card alertc" onclick="go(\'box\')">💊 حان موعد الجرعة<br><small>اضغط للذهاب إلى العلبة</small></div>':'')+
+'<div class="card"><b>تم تناول '+tk+' من '+n+' جرعات اليوم</b><div class="prog"><i style="width:'+(tk/n*100)+'%"></i></div></div>'+
+'<h2>💊 أدوية اليوم</h2>'+S.meds.map(medCard).join('')+
+'<h2>🔔 التذكيرات</h2><div class="tl">'+S.meds.slice().sort(function(a,b){return a.t<b.t?-1:1}).map(function(m){return '<div><b>'+m.t+'</b><div>💊 '+esc(m.n)+'</div><span class="badge '+m.st+'">'+(m.st=='taken'?'✓ تم تناول الجرعة':m.st=='soon'?'🔔 موعد الجرعة':'⏳ لاحقًا')+'</span></div>'}).join('')+'</div>'+
+'<div class="card"><b>🔔 إشعارات</b><div class="mu">'+(S.box=='alert'?'حان موعد '+esc(S.meds[1].n)+' الآن':'لا توجد إشعارات جديدة')+'</div><div class="mu">العلبة متصلة وتمت المزامنة</div></div>'}
+function meds(){return '<h2>الأدوية</h2>'+S.meds.map(function(m){return '<div class="card"><div class="row"><b>'+esc(m.n)+'</b><span class="badge '+m.st+'">'+LB[m.st]+'</span></div><div class="mu">الجرعة: '+esc(m.d)+' • '+esc(m.f)+'<br>الموعد: '+ap(m.t)+'<br>SmartMed Box: الخانة '+m.s+' ('+SL[m.s]+')</div></div>'}).join('')+
+(S.form?'<div class="card"><b>إضافة دواء</b><div class="mu" style="margin-bottom:10px">أدخل فقط ما وصفه لك طبيبك. التطبيق لا يقدم توصيات دوائية.</div><label>اسم الدواء</label><input type="text" id="fn"><label>الجرعة</label><input type="text" id="fd" placeholder="مثال: 1 قرص"><label>وقت الجرعة</label><input type="time" id="ft" value="09:00"><label>رقم الخانة</label><select id="fs"><option>1</option><option>2</option><option>3</option><option>4</option></select><button class="btn" data-a="save">حفظ</button><button class="btn sec" data-a="cancel">إلغاء</button></div>':'<button class="btn" data-a="add">➕ إضافة دواء</button>')}
+function box(){var al=S.box=='alert',op=S.box=='opened';
+function cell(i){var m=S.meds.filter(function(x){return x.s==i})[0],cls='',l='';
+if(i==2&&al){cls='alert';l='time'}else if(m&&m.st!='taken')l='ready';
+return '<div class="cell '+cls+'"><div>'+SL[i]+'</div><div class="led '+l+'"></div><div style="font-size:14px">'+(l=='time'?'🟡 موعد الدواء':l=='ready'?'🟢 جاهزة':'⚪ انتظار')+'</div></div>'}
+return '<h2>SmartMed Box</h2><div class="card"><div><span class="dot"></span><b>حالة العلبة: '+(S.set.conn?'🟢 متصلة':'🔴 غير متصلة')+'</b></div><div class="mu">آخر مزامنة: منذ دقيقة</div></div>'+
+'<div class="box">'+[1,2,3,4].map(cell).join('')+'</div><div style="height:14px"></div>'+
+(al?'<div class="card alertc">💊 حان موعد الجرعة<div class="mu" style="color:inherit">🔔 '+esc(S.meds[1].n)+' — الخانة 2</div></div><button class="btn ok" data-a="open">فتح الخانة</button>':
+op?'<div class="card taken" style="text-align:center;font-size:22px;font-weight:700">✓ تم فتح الخانة<div style="font-size:16px">تم رصد الفتح وتسجيل الجرعة كمأخوذة</div></div><button class="btn sec" data-a="reset">إعادة العرض التجريبي</button>':
+'<button class="btn" data-a="sim">محاكاة موعد الجرعة</button>')+
+'<div class="note">🟢 جاهزة • 🟡 موعد الدواء • ⚪ انتظار — محاكاة فقط</div>'}
+function rec(){var q=S.q.trim(),out='';
+if(q){var items=S.meds.map(function(m){return{t:'دواء',n:m.n,s:'الخانة '+m.s+' • '+ap(m.t)}}).concat(S.docs.map(function(d){return{t:CN[d.c],n:d.n,s:d.sub+' • '+d.dt}}),S.visits.map(function(v){return{t:'زيارة',n:v[1]+' — '+v[0],s:v[2]}})).filter(function(i){return(i.n+i.s+i.t).indexOf(q)>-1});
+out='<h2>نتائج البحث</h2>'+(items.length?items.map(function(i){return '<div class="card"><span class="badge waiting">'+i.t+'</span><div><b>'+esc(i.n)+'</b></div><div class="mu">'+esc(i.s)+'</div></div>'}).join(''):'<div class="card mu">لا توجد نتائج</div>')}
+else{[['rx','📷 الروشتات'],['lab','🧪 التحاليل'],['rep','📄 التقارير الطبية']].forEach(function(g){out+='<h2>'+g[1]+'</h2>'+S.docs.map(function(d,i){return d.c==g[0]?'<div class="card row" data-a="view" data-i="'+i+'" style="cursor:pointer"><div class="ic">'+g[1].slice(0,2)+'</div><div class="grow"><b>'+esc(d.n)+'</b><div class="mu">'+d.dt+' • '+esc(d.sub)+'</div></div></div>':''}).join('')});
+out+='<button class="btn" data-a="doc">➕ إضافة مستند</button><h2>🩺 الزيارات</h2><div class="tl">'+S.visits.map(function(v){return '<div><b>'+v[0]+'</b><div>'+v[1]+'</div><div class="mu">'+v[2]+'</div></div>'}).join('')+'</div>'}
+return '<h2>السجل الصحي</h2><input type="text" id="q" placeholder="🔍 ابحث في السجل الصحي" value="'+esc(S.q)+'" style="border-color:var(--pr)">'+out}
+function tg(k,l,v){return '<div class="tg"><span>'+l+'</span><button class="sw '+(v?'on':'')+'" data-a="tog" data-k="'+k+'" aria-label="'+l+'"></button></div>'}
+function more(){var s=S.sh;return '<h2>مشاركة المعلومات</h2><div class="card"><div class="row"><div class="ic">👩‍👦</div><div class="grow"><div class="mu">فرد من العائلة</div><b>أحمد محمد</b><div><span class="badge '+(s.on?'taken':'waiting')+'">'+(s.on?'🟢 مشاركة مفعلة':'⚪ مشاركة متوقفة')+'</span></div></div></div>'+
+[['a','مواعيد الأدوية'],['b','قائمة الأدوية'],['c','التقارير'],['d','التحاليل']].map(function(x){return '<label class="chk"><input type="checkbox" data-a="chk" data-k="'+x[0]+'" '+(s[x[0]]?'checked':'')+'>'+x[1]+'</label>'}).join('')+
+'<div class="mu" style="margin:6px 0 12px">🔒 لا تتم أي مشاركة إلا بموافقتك، ويمكنك إيقافها في أي وقت.</div><button class="btn" data-a="shsave">حفظ إعدادات المشاركة</button><button class="btn sec" data-a="shoff">'+(s.on?'إيقاف المشاركة':'تفعيل المشاركة')+'</button></div>'+
+'<h2>⚙️ الإعدادات</h2><div class="card">'+tg('lang','العربية / English (العربية)',S.set.lang)+tg('notif','الإشعارات',S.set.notif)+tg('sound','الصوت',S.set.sound)+tg('vib','الاهتزاز',S.set.vib)+tg('dark','الوضع الليلي',S.set.dark)+tg('conn','اتصال SmartMed Box',S.set.conn)+'</div>'}
+var TABS=[['home','🏠','الرئيسية'],['meds','💊','الأدوية'],['box','📦','العلبة'],['rec','📁','السجل'],['more','⚙️','المزيد']];
+function R(){var p=document.activeElement&&document.activeElement.id=='q';
+var b={home:home,meds:meds,box:box,rec:rec,more:more}[S.tab]();
+if(S.tab!='home')b='<div style="height:16px"></div>'+b;
+var m='';if(S.view!=null){var d=S.docs[S.view];m='<div class="modal" data-a="close"><div><b>'+esc(d.n)+'</b><div class="mu">'+d.dt+' • '+esc(d.sub)+'</div><div class="doc">📄</div><div class="mu">مستند تجريبي (Mock)</div><button class="btn sec" style="margin-top:12px" data-a="close">إغلاق</button></div></div>'}
+if(S.docSheet)m='<div class="modal"><div><b>إضافة مستند (محاكاة رفع صورة/PDF)</b><div style="height:12px"></div><button class="btn" data-a="up" data-c="rx">📷 روشتة</button><button class="btn" data-a="up" data-c="lab">🧪 تحليل</button><button class="btn" data-a="up" data-c="rep">📄 تقرير طبي</button><button class="btn sec" data-a="close">إلغاء</button></div></div>';
+document.getElementById('app').innerHTML='<div class="shell"><nav>'+TABS.map(function(t){return '<button class="'+(S.tab==t[0]?'on':'')+'" data-a="go" data-t="'+t[0]+'"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join('')+'</nav><main>'+b+'</main></div>'+m+(S.toast?'<div class="toast">'+S.toast+'</div>':'');
+if(p){var q=document.getElementById('q');q.focus();q.setSelectionRange(q.value.length,q.value.length)}
+document.documentElement.dataset.theme=S.set.dark?'dark':'light'}
+function go(t){S.tab=t;R();scrollTo(0,0)}
+document.addEventListener('input',function(e){if(e.target.id=='q'){S.q=e.target.value;R()}});
+document.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el)return;if(el.classList.contains('modal')&&e.target!==el)return;var a=el.dataset.a,D=el.dataset;
+if(a=='go')go(D.t);
+else if(a=='add'){S.form=true;R()}else if(a=='cancel'){S.form=false;R()}
+else if(a=='save'){var n=document.getElementById('fn').value.trim();if(!n){toast('من فضلك أدخل اسم الدواء');return}
+S.meds.push({n:n,d:document.getElementById('fd').value||'—',f:'مرة يوميًا',t:document.getElementById('ft').value||'09:00',s:+document.getElementById('fs').value,st:'waiting'});S.form=false;toast('✓ تمت إضافة الدواء')}
+else if(a=='sim'){S.box='alert';beep();if(S.set.vib&&navigator.vibrate)navigator.vibrate([200,100,200]);R()}
+else if(a=='open'){S.box='opened';S.meds[1].st='taken';toast('✓ تم فتح الخانة')}
+else if(a=='reset'){S.box='idle';S.meds[1].st='soon';R()}
+else if(a=='view'){S.view=+D.i;R()}else if(a=='close'){S.view=null;S.docSheet=false;R()}
+else if(a=='doc'){S.docSheet=true;R()}
+else if(a=='up'){S.docs.push({c:D.c,n:'مستند جديد — '+CN[D.c],dt:'29 Sep 2026',sub:'تم الرفع الآن (محاكاة)'});S.docSheet=false;toast('✓ تم حفظ المستند')}
+else if(a=='tog'){var k=D.k;S.set[k]=S.set[k]?0:1;if(k=='lang'){S.set.lang=1;toast('English قريبًا في النسخة الكاملة')}else R()}
+else if(a=='chk'){S.sh[D.k]=el.checked?1:0}
+else if(a=='shsave'){toast('✓ تم حفظ إعدادات المشاركة بموافقتك')}
+else if(a=='shoff'){S.sh.on=S.sh.on?0:1;R()}});
+R();
+</script>
+</body>
+</html>
